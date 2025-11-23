@@ -57,6 +57,7 @@ export function HeroCarousel() {
 
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDarkBackground, setIsDarkBackground] = useState(true); // Par défaut, on est sur le carousel (fond sombre)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,6 +66,107 @@ export function HeroCarousel() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Détecter la couleur du fond sous la navigation pour changer la couleur des liens
+  useEffect(() => {
+    const detectBackgroundColor = () => {
+      if (typeof window === "undefined") return;
+      
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      
+      // Si on est encore dans le carousel (première section)
+      if (scrollY < windowHeight * 0.1) {
+        setIsDarkBackground(true); // Carousel = fond sombre → texte blanc
+        return;
+      }
+      
+      // On est dans les sections principales - chercher le fond sous la nav
+      const navElement = document.querySelector("nav");
+      if (!navElement) {
+        setIsDarkBackground(false); // Par défaut, fond clair → texte bleu
+        return;
+      }
+      
+      const navRect = navElement.getBoundingClientRect();
+      const checkY = navRect.bottom + 50; // Juste sous la navigation
+      const checkX = window.innerWidth / 2;
+      
+      // Trouver l'élément à cette position
+      const elementBelow = document.elementFromPoint(checkX, checkY);
+      
+      if (!elementBelow) {
+        setIsDarkBackground(false); // Par défaut, fond clair
+        return;
+      }
+      
+      // Remonter dans le DOM pour trouver un élément avec un fond visible
+      let currentElement: HTMLElement | null = elementBelow as HTMLElement;
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      while (currentElement && attempts < maxAttempts) {
+        const tagName = currentElement.tagName;
+        // Ignorer certains éléments
+        if (tagName === "NAV" || tagName === "HEADER" || tagName === "BODY" || tagName === "HTML") {
+          currentElement = currentElement.parentElement;
+          attempts++;
+          continue;
+        }
+        
+        const computedStyle = window.getComputedStyle(currentElement);
+        const bgColor = computedStyle.backgroundColor;
+        
+        // Vérifier si le fond est vraiment visible (non transparent)
+        if (bgColor && bgColor !== "rgba(0, 0, 0, 0)" && bgColor !== "transparent") {
+          // Extraire les valeurs RGB
+          const rgbMatch = bgColor.match(/\d+/g);
+          if (rgbMatch && rgbMatch.length >= 3) {
+            const r = parseInt(rgbMatch[0]);
+            const g = parseInt(rgbMatch[1]);
+            const b = parseInt(rgbMatch[2]);
+            
+            // Calculer la luminosité (formule standard)
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            // Si la luminosité est élevée (>= 0.5), c'est un fond clair → texte bleu (isDarkBackground = false)
+            // Si la luminosité est faible (< 0.5), c'est un fond sombre → texte blanc (isDarkBackground = true)
+            const shouldBeDark = luminance < 0.5;
+            setIsDarkBackground(shouldBeDark);
+            return;
+          }
+        }
+        
+        // Remonter au parent
+        currentElement = currentElement.parentElement;
+        attempts++;
+      }
+      
+      // Si on n'a pas trouvé de fond, on est probablement sur un fond clair
+      setIsDarkBackground(false);
+    };
+
+    const handleScroll = () => {
+      requestAnimationFrame(detectBackgroundColor);
+    };
+
+    // Détecter au chargement plusieurs fois pour s'assurer
+    const timeoutId1 = setTimeout(detectBackgroundColor, 100);
+    const timeoutId2 = setTimeout(detectBackgroundColor, 500);
+    const timeoutId3 = setTimeout(detectBackgroundColor, 1000);
+    
+    // Écouter le scroll
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    
+    return () => {
+      clearTimeout(timeoutId1);
+      clearTimeout(timeoutId2);
+      clearTimeout(timeoutId3);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (
@@ -128,8 +230,14 @@ export function HeroCarousel() {
                   >
                     <Link
                       href={item.href}
-                      className="px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] !text-white transition-all hover:!text-yellow-200"
-                      style={{ color: '#ffffff' }}
+                      className={`px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] transition-all ${
+                        isDarkBackground 
+                          ? "!text-white hover:!text-yellow-200" 
+                          : "!text-[var(--color-blue-rdc)] hover:!text-[var(--color-blue-sky)]"
+                      }`}
+                      style={{ 
+                        color: isDarkBackground ? '#ffffff' : '#0095c9'
+                      }}
                     >
                       {item.title}
                     </Link>
@@ -144,8 +252,14 @@ export function HeroCarousel() {
                             <Link
                               key={child.title}
                               href={child.href}
-                              className="block rounded-lg px-4 py-2 text-sm font-semibold !text-white transition-all hover:bg-white/20"
-                              style={{ color: '#ffffff' }}
+                              className={`block rounded-lg px-4 py-2 text-sm font-semibold transition-all hover:bg-white/20 ${
+                                isDarkBackground 
+                                  ? "!text-white" 
+                                  : "!text-[var(--color-blue-rdc)]"
+                              }`}
+                              style={{ 
+                                color: isDarkBackground ? '#ffffff' : '#0095c9'
+                              }}
                             >
                               {child.title}
                             </Link>
@@ -181,10 +295,16 @@ export function HeroCarousel() {
                   transition={{ delay: 0.7 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="hidden md:flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider !text-white backdrop-blur-md transition-all hover:bg-white/20"
-                  style={{ color: '#ffffff' }}
+                  className={`hidden md:flex items-center gap-2 rounded-full backdrop-blur-md px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all hover:bg-white/20 ${
+                    isDarkBackground 
+                      ? "bg-white/10 !text-white" 
+                      : "bg-[var(--color-blue-rdc)]/10 !text-[var(--color-blue-rdc)]"
+                  }`}
+                  style={{ 
+                    color: isDarkBackground ? '#ffffff' : '#0095c9'
+                  }}
                 >
-                  <span style={{ color: '#ffffff' }}>Mon espace</span>
+                  <span>Mon espace</span>
                 </motion.a>
 
                 <motion.button
@@ -194,7 +314,14 @@ export function HeroCarousel() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsNavOpen(!isNavOpen)}
-                  className="lg:hidden rounded-full bg-white/10 p-2 text-white backdrop-blur-md transition-all hover:bg-white/20"
+                  className={`lg:hidden rounded-full backdrop-blur-md p-2 transition-all hover:bg-white/20 ${
+                    isDarkBackground 
+                      ? "bg-white/10 text-white" 
+                      : "bg-[var(--color-blue-rdc)]/10 text-[var(--color-blue-rdc)]"
+                  }`}
+                  style={{ 
+                    color: isDarkBackground ? '#ffffff' : '#0095c9'
+                  }}
                   aria-label="Menu"
                 >
                   <AnimatePresence mode="wait">
@@ -244,8 +371,14 @@ export function HeroCarousel() {
                       >
                         <Link
                           href={item.href}
-                          className="block rounded-xl px-5 py-3 text-sm font-bold uppercase tracking-wider !text-white transition-all hover:bg-white/20 hover:translate-x-2"
-                          style={{ color: '#ffffff' }}
+                          className={`block rounded-xl px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all hover:bg-white/20 hover:translate-x-2 ${
+                            isDarkBackground 
+                              ? "!text-white" 
+                              : "!text-[var(--color-blue-rdc)]"
+                          }`}
+                          style={{ 
+                            color: isDarkBackground ? '#ffffff' : '#0095c9'
+                          }}
                           onClick={() => setIsNavOpen(false)}
                         >
                           {item.title}
@@ -260,8 +393,14 @@ export function HeroCarousel() {
                               <Link
                                 key={child.title}
                                 href={child.href}
-                                className="block rounded-lg px-4 py-2 text-sm !text-white transition-all hover:bg-white/10 hover:translate-x-1"
-                                style={{ color: '#ffffff' }}
+                                className={`block rounded-lg px-4 py-2 text-sm transition-all hover:bg-white/10 hover:translate-x-1 ${
+                                  isDarkBackground 
+                                    ? "!text-white" 
+                                    : "!text-[var(--color-blue-rdc)]"
+                                }`}
+                                style={{ 
+                                  color: isDarkBackground ? '#ffffff' : '#0095c9'
+                                }}
                                 onClick={() => setIsNavOpen(false)}
                               >
                                 {child.title}
@@ -334,7 +473,7 @@ export function HeroCarousel() {
               />
             </motion.div>
             {/* Blue overlay from charte graphique */}
-            <div className="absolute inset-0 bg-[#0095c9]/30" />
+            <div className="absolute inset-0 bg-[#0095c9]/50" />
             {/* Subtle overlay for text readability only */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>

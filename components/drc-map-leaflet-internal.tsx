@@ -121,22 +121,47 @@ export default function DRCMapLeafletInternal({ currentProvince = currentProvinc
   // Fonction pour gérer le clic sur une province
   const onEachFeature = (feature: any, layer: L.Layer) => {
     const provinceName = feature?.properties?.name;
-    const slug = getProvinceSlugFromName(provinceName);
-    const province = provinces.find((p) => p.slug === slug);
-
-    if (province) {
-      // Ajouter un popup
-      layer.bindPopup(
-        `<div style="text-align: center;">
-          <strong style="font-size: 16px; color: #0066a0;">${provinceName}</strong><br/>
-          <a href="/consultation/${slug}" style="color: #0095c9; text-decoration: none; font-weight: 500;">Voir les détails →</a>
-        </div>`
+    let slug = getProvinceSlugFromName(provinceName);
+    
+    // Si le slug n'est pas trouvé, essayer de trouver la province par le nom directement
+    if (!slug) {
+      const provinceByName = provinces.find((p) => 
+        p.name.toLowerCase() === provinceName.toLowerCase() ||
+        p.name === provinceName
       );
+      if (provinceByName) {
+        slug = provinceByName.slug;
+      }
+    }
+    
+    const province = slug ? provinces.find((p) => p.slug === slug) : null;
+    const isConsulted = province && consultedProvinces.includes(province.id);
 
-      // Gérer le clic
+    // Toujours permettre le clic, même si pas de consultation
+    if (slug) {
+      // Ajouter un popup
+      const popupContent = isConsulted
+        ? `<div style="text-align: center;">
+            <strong style="font-size: 16px; color: #0066a0;">${provinceName}</strong><br/>
+            <span style="color: #10b981; font-size: 12px;">✓ Consultation réalisée</span><br/>
+            <a href="/consultation/${slug}" style="color: #0095c9; text-decoration: none; font-weight: 500; margin-top: 8px; display: inline-block;">Voir les détails →</a>
+          </div>`
+        : `<div style="text-align: center;">
+            <strong style="font-size: 16px; color: #0066a0;">${provinceName}</strong><br/>
+            <span style="color: #9ca3af; font-size: 12px;">Consultation à venir</span>
+          </div>`;
+      
+      layer.bindPopup(popupContent);
+
+      // Gérer le clic - rediriger vers la page de la province
       layer.on({
         click: () => {
-          router.push(`/consultation/${slug}`);
+          if (isConsulted) {
+            router.push(`/consultation/${slug}`);
+          } else {
+            // Même si pas de consultation, on peut rediriger vers la page
+            router.push(`/consultation/${slug}`);
+          }
         },
         mouseover: (e) => {
           const layer = e.target;

@@ -31,7 +31,7 @@ export function SiteFooter() {
           <p>© {new Date().getFullYear()} Ministère de la Jeunesse de la RDC. Tous droits réservés.</p>
           <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-blue-50">
             <span className="state-line-horizontal inline-block h-2 w-10 rounded-sm" aria-hidden />
-            <span>Paix - Travail - Progrès</span>
+            <span>Justice - Paix - Travail</span>
           </div>
         </div>
       </div>

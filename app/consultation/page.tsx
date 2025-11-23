@@ -6,6 +6,7 @@ import { getAllConsultations } from "@/lib/consultations";
 import { provinces } from "@/lib/provinces";
 import { DRCMapLeaflet } from "@/components/drc-map-leaflet";
 import { currentProvinceId } from "@/lib/provinces";
+import { HeroCarousel } from "@/components/hero-carousel";
 
 export default function ConsultationPage() {
   const consultations = getAllConsultations();
@@ -24,6 +25,7 @@ export default function ConsultationPage() {
 
   return (
     <div className="bg-[var(--color-surface)]">
+      <HeroCarousel />
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* Header */}
         <motion.div
