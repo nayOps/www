@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { HeroCarousel } from "@/components/hero-carousel";
+import { DRCMapLeaflet } from "@/components/drc-map-leaflet";
+import { currentProvinceId } from "@/lib/provinces";
 
 const pillars = [
   {
@@ -41,7 +43,7 @@ const highlights = [
     excerpt:
       "Appel à candidatures pour les jeunes innovateurs des provinces de l'Est. Clôture le 30 janvier.",
     date: "15 Jan 2025",
-    image: "/images/hero/hero-1.jpg",
+    image: "/caru1.jpg",
   },
   {
     category: "Événement",
@@ -49,7 +51,7 @@ const highlights = [
     excerpt:
       "Deux jours d'échanges à Kinshasa avec 500 jeunes ambassadeurs du civisme et de la paix.",
     date: "12 Fév 2025",
-    image: "/images/hero/hero-2.jpg",
+    image: "/caru2.jpg",
   },
   {
     category: "Actualité",
@@ -57,44 +59,7 @@ const highlights = [
     excerpt:
       "De nouvelles cohortes pour la certification réseau, avec des centres ouverts dans 6 provinces.",
     date: "08 Jan 2025",
-    image: "/images/hero/hero-3.jpg",
-  },
-];
-
-const stats = [
-  { value: "2.4M", label: "Jeunes accompagnés", context: "dans tout le pays", icon: "👥", color: "blue" },
-  { value: "320", label: "Programmes actifs", context: "insertion & civisme", icon: "🚀", color: "yellow" },
-  { value: "48", label: "Espaces provinciaux", context: "Maisons de la jeunesse", icon: "🏛️", color: "red" },
-  { value: "92%", label: "Taux de satisfaction", context: "services rendus", icon: "⭐", color: "blue" },
-];
-
-const flagshipPrograms = [
-  {
-    title: "Académie de l'Innovation",
-    description:
-      "Parcours intensif de 12 semaines pour accélérer les projets technologiques portés par des jeunes.",
-    tag: "Innovation",
-    icon: "💡",
-    gradient: "from-blue-500/10 to-blue-600/5",
-    borderColor: "border-blue-200",
-  },
-  {
-    title: "Jeunesse & Paix",
-    description:
-      "Programme d'éveil patriotique, dialogues communautaires et actions citoyennes dans 8 provinces.",
-    tag: "Citoyenneté",
-    icon: "🕊️",
-    gradient: "from-yellow-400/10 to-yellow-500/5",
-    borderColor: "border-yellow-200",
-  },
-  {
-    title: "Pont vers l'Emploi",
-    description:
-      "Plateforme d'offres, coaching et mentorat en partenariat avec les entreprises publiques et privées.",
-    tag: "Insertion",
-    icon: "🔗",
-    gradient: "from-red-500/10 to-red-600/5",
-    borderColor: "border-red-200",
+    image: "/caru3.jpg",
   },
 ];
 
@@ -136,7 +101,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl border-2 border-transparent bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:border-[var(--color-blue-rdc)] hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200/20 p-8 transition-opacity hover:opacity-90"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-0 transition-opacity group-hover:opacity-5`} />
                 <div className="relative z-10">
@@ -153,184 +118,159 @@ export default function Home() {
           </div>
         </AnimatedSection>
 
-        <AnimatedSection className="mt-24 grid gap-8 lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            className="group relative overflow-hidden rounded-2xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-8 shadow-xl"
-          >
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-200/30 blur-3xl" />
+        <AnimatedSection className="mt-24">
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80 backdrop-blur-2xl p-8 border border-white/10">
+            {/* Effets de lumière en arrière-plan */}
+            <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" />
+            <div className="absolute -left-24 -bottom-24 h-80 w-80 rounded-full bg-yellow-300/15 blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-blue-200/10 blur-3xl" />
+            
             <div className="relative z-10">
               <SectionHeader
-                eyebrow="Éveil patriotique"
-                title="Mobilisation nationale"
-                description="Renforcer l'unité, la mémoire collective et l'engagement citoyen."
+                eyebrow="Consultation nationale"
+                title="La ministre à l'écoute de la jeunesse"
+                description="Une tournée dans les 26 provinces pour écouter les préoccupations, les aspirations et les propositions de la jeunesse congolaise."
               />
-              <div className="mt-8 space-y-4">
-                {[
-                  "200 clubs 'Paix & Civisme' actifs dans les écoles et universités",
-                  "Tournées régionales avec témoignages des jeunes ambassadeurs",
-                  "Ressources pédagogiques téléchargeables et podcasts thématiques",
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-start gap-3"
-                  >
-                    <span className="mt-1 text-xl">✓</span>
-                    <p className="text-gray-700">{item}</p>
-                  </motion.div>
-                ))}
+              <div className="mt-8">
+                <DRCMapLeaflet currentProvince={currentProvinceId} className="min-h-[500px]" />
               </div>
-              <Link
-                href="/ministere-face-jeunesse"
-                className="btn btn-primary mt-8 w-fit shadow-lg hover:shadow-xl"
-              >
-                Participer
-              </Link>
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-gray-800">
+                    Province actuelle : <span className="text-[var(--color-blue-rdc)] font-bold">Kinshasa</span>
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Cliquez sur une province pour voir les détails de la consultation
+                  </p>
+                </div>
+                <Link
+                  href="/consultation"
+                  className="group/btn relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--color-blue-rdc)] to-[var(--color-blue-sky)] px-6 py-3 text-sm font-semibold text-white border border-[var(--color-blue-rdc)]/20 transition-opacity hover:opacity-90"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Voir toutes les consultations
+                    <span className="transition-transform group-hover/btn:translate-x-1">→</span>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-blue-sky)] to-[var(--color-blue-rdc)] opacity-0 transition-opacity group-hover/btn:opacity-100" />
+                </Link>
+              </div>
             </div>
-          </motion.div>
+          </div>
+        </AnimatedSection>
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            className="group relative overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 text-white shadow-2xl"
-          >
-            <div className="absolute inset-0 bg-[url('/images/hero/hero-1.jpg')] bg-cover bg-center opacity-10 mix-blend-overlay" />
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-yellow-400/20 blur-3xl" />
+        <AnimatedSection className="mt-24">
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80 backdrop-blur-2xl p-8 border border-white/10">
+            {/* Effets de lumière en arrière-plan */}
+            <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" />
+            <div className="absolute -left-24 -bottom-24 h-80 w-80 rounded-full bg-yellow-300/15 blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-blue-200/10 blur-3xl" />
+            
             <div className="relative z-10">
               <SectionHeader
                 eyebrow="Actualités"
                 title="À la une"
-                description="Les dernières informations officielles."
-                inverted
+                description="Les dernières informations officielles et les événements marquants."
               />
-              <div className="mt-8 space-y-6">
-                {highlights.map((item, index) => (
+              
+              {/* Carousel principal pour le premier article */}
+              <div className="mt-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="group/article relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-800/20"
+                >
+                  <div className="relative h-80 overflow-hidden">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover/article:scale-110"
+                      style={{ backgroundImage: `url(${highlights[0].image})` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent" />
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 text-white">
+                      <div className="mb-3 flex items-center gap-3">
+                        <span className="rounded-full bg-yellow-400/20 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-yellow-200 border border-yellow-400/10">
+                          {highlights[0].category}
+                        </span>
+                        <span className="text-sm text-white/70">{highlights[0].date}</span>
+                      </div>
+                      <h3 className="mb-3 text-2xl font-bold text-white group-hover/article:text-yellow-200 transition-colors">
+                        {highlights[0].title}
+                      </h3>
+                      <p className="mb-4 text-sm leading-relaxed text-white/90">
+                        {highlights[0].excerpt}
+                      </p>
+                      <Link
+                        href="/actualites"
+                        className="group/btn inline-flex w-fit items-center gap-2 rounded-xl bg-white/20 backdrop-blur-sm px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/30 hover:gap-3 border border-white/10"
+                      >
+                        Lire la suite
+                        <span className="transition-transform group-hover/btn:translate-x-1">→</span>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Grille d'articles secondaires */}
+              <div className="mt-8 grid gap-6 md:grid-cols-2">
+                {highlights.slice(1).map((item, index) => (
                   <motion.article
                     key={item.title}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="group/item cursor-pointer border-b border-white/10 pb-6 last:border-0 transition-all hover:border-white/20"
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                    className="group/article-card relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-xl border border-white/10 transition-opacity hover:opacity-90"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="h-16 w-16 overflow-hidden rounded-lg bg-white/10">
-                          <div className="h-full w-full bg-gradient-to-br from-blue-400 to-blue-600" />
-                        </div>
+                    <div className="relative h-48 overflow-hidden">
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover/article-card:scale-110"
+                        style={{ backgroundImage: `url(${item.image})` }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+                      <div className="absolute top-4 left-4">
+                        <span className="rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white border border-white/10">
+                          {item.category}
+                        </span>
                       </div>
-                      <div className="flex-1">
-                        <div className="mb-2 flex items-center gap-3">
-                          <span className="rounded-full bg-yellow-400/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-yellow-200">
-                            {item.category}
-                          </span>
-                          <span className="text-xs text-white/60">{item.date}</span>
-                        </div>
-                        <h3 className="text-lg font-semibold text-white group-hover/item:text-yellow-200 transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-white/80">{item.excerpt}</p>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <span className="text-xs text-white/80">{item.date}</span>
                       </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="mb-2 text-lg font-bold text-gray-900 group-hover/article-card:text-[var(--color-blue-rdc)] transition-colors">
+                        {item.title}
+                      </h3>
+                      <p className="mb-4 text-sm leading-relaxed text-gray-600">
+                        {item.excerpt}
+                      </p>
+                      <Link
+                        href="/actualites"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-blue-rdc)] transition-all hover:gap-3"
+                      >
+                        Lire plus
+                        <span className="transition-transform group-hover/article-card:translate-x-1">→</span>
+                      </Link>
                     </div>
                   </motion.article>
                 ))}
               </div>
-              <Link
-                href="/actualites"
-                className="btn btn-primary mt-8 bg-white text-gray-900 shadow-lg hover:bg-yellow-100 hover:shadow-xl"
-              >
-                Toutes les actualités →
-              </Link>
+
+              {/* Bouton voir toutes les actualités */}
+              <div className="mt-8 flex justify-center">
+                <Link
+                  href="/actualites"
+                  className="group/btn relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--color-blue-rdc)] to-[var(--color-blue-sky)] px-8 py-4 text-sm font-semibold text-white border border-[var(--color-blue-rdc)]/20 transition-opacity hover:opacity-90"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Voir toutes les actualités
+                    <span className="transition-transform group-hover/btn:translate-x-1">→</span>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-blue-sky)] to-[var(--color-blue-rdc)] opacity-0 transition-opacity group-hover/btn:opacity-100" />
+                </Link>
+              </div>
             </div>
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection className="mt-24">
-          <SectionHeader
-            eyebrow="Chiffres clés"
-            title="Un impact mesurable"
-            description="Des indicateurs consolidés chaque trimestre et partagés en toute transparence."
-          />
-          <motion.div
-            className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4"
-            variants={staggerParent}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {stats.map((stat, index) => (
-              <motion.article
-                key={stat.label}
-                variants={fadeInUp}
-                className="group relative overflow-hidden rounded-2xl border-2 border-transparent bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:border-[var(--color-blue-rdc)] hover:shadow-2xl"
-              >
-                <div className={`absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br ${
-                  stat.color === "blue" ? "from-blue-400/20 to-blue-600/20" :
-                  stat.color === "yellow" ? "from-yellow-400/20 to-yellow-500/20" :
-                  "from-red-400/20 to-red-600/20"
-                } blur-2xl`} />
-                <div className="relative z-10">
-                  <div className="mb-4 text-4xl">{stat.icon}</div>
-                  <motion.p
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, type: "spring" }}
-                    className="text-4xl font-bold text-[var(--color-blue-rdc)]"
-                  >
-                    {stat.value}
-                  </motion.p>
-                  <p className="mt-3 text-sm font-semibold text-gray-900">{stat.label}</p>
-                  <p className="mt-1 text-xs text-gray-500">{stat.context}</p>
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection className="mt-24 space-y-12">
-          <SectionHeader
-            eyebrow="Programmes phares"
-            title="Accompagner chaque parcours"
-            description="Des initiatives structurantes pour l'employabilité, l'entrepreneuriat et le civisme."
-          />
-          <div className="grid gap-8 md:grid-cols-3">
-            {flagshipPrograms.map((program, index) => (
-              <motion.article
-                key={program.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`group relative overflow-hidden rounded-2xl border-2 ${program.borderColor} bg-white p-8 shadow-xl transition-all hover:-translate-y-3 hover:shadow-2xl`}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${program.gradient} opacity-0 transition-opacity group-hover:opacity-100`} />
-                <div className="relative z-10">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-5xl">{program.icon}</span>
-                    <span className="badge bg-[var(--color-blue-rdc)]/10 text-[var(--color-blue-rdc)]">
-                      {program.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900">{program.title}</h3>
-                  <p className="mt-4 text-sm leading-relaxed text-gray-600">{program.description}</p>
-                  <Link
-                    href="/programmes"
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-blue-rdc)] transition-transform group-hover:gap-3"
-                  >
-                    En savoir plus →
-                  </Link>
-                </div>
-                <div className="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-100 to-transparent opacity-0 blur-2xl transition-opacity group-hover:opacity-50" />
-              </motion.article>
-            ))}
           </div>
         </AnimatedSection>
 
@@ -339,7 +279,7 @@ export default function Home() {
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            className="group relative overflow-hidden rounded-2xl border-2 border-gray-100 bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl"
+            className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200/20 p-8"
           >
             <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-blue-100/30 blur-3xl" />
             <div className="relative z-10">
@@ -359,7 +299,7 @@ export default function Home() {
                   >
                     <Link
                       href={link.href}
-                      className="group/link flex items-center gap-3 rounded-xl border-2 border-gray-200 bg-white p-4 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-1 hover:border-[var(--color-blue-rdc)] hover:bg-blue-50 hover:shadow-lg"
+                      className="group/link flex items-center gap-3 rounded-xl bg-white/60 backdrop-blur-sm border border-gray-200/20 p-4 text-sm font-semibold text-gray-700 transition-opacity hover:opacity-90 hover:border-[var(--color-blue-rdc)]/30"
                     >
                       <span className="text-2xl">{link.icon}</span>
                       <span className="flex-1 group-hover/link:text-[var(--color-blue-rdc)] transition-colors">
@@ -377,7 +317,7 @@ export default function Home() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            className="group relative overflow-hidden rounded-2xl border-2 border-gray-100 bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl"
+            className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200/20 p-8"
           >
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-yellow-100/30 blur-3xl" />
             <div className="relative z-10">
@@ -394,7 +334,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.05 }}
-                    className="group/partner flex h-24 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:border-[var(--color-blue-rdc)] hover:bg-blue-50 hover:shadow-lg"
+                    className="group/partner flex h-24 items-center justify-center rounded-xl bg-white/60 backdrop-blur-sm border border-dashed border-gray-200/30 p-4 transition-opacity hover:opacity-90 hover:border-[var(--color-blue-rdc)]/30"
                   >
                     <span className="text-center text-xs font-semibold text-gray-600 group-hover/partner:text-[var(--color-blue-rdc)] transition-colors">
                       {partner.name}
@@ -405,6 +345,7 @@ export default function Home() {
             </div>
           </motion.div>
         </AnimatedSection>
+
       </main>
     </div>
   );
@@ -464,17 +405,3 @@ function AnimatedSection({ children, className = "" }: AnimatedSectionProps) {
   );
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
-};
-
-const staggerParent = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.05,
-    },
-  },
-};
