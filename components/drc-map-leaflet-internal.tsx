@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Popup } from "react-l
 import { motion } from "framer-motion";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { provinces } from "@/lib/provinces";
+import { provinces, currentProvinceId } from "@/lib/provinces";
 import { getProvinceSlugFromName } from "@/lib/province-mapping";
 import { getAllConsultations } from "@/lib/consultations";
 import type { GeoJsonObject } from "geojson";
