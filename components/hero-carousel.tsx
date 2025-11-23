@@ -333,6 +333,8 @@ export function HeroCarousel() {
                 }}
               />
             </motion.div>
+            {/* Blue overlay from charte graphique */}
+            <div className="absolute inset-0 bg-[#0095c9]/30" />
             {/* Subtle overlay for text readability only */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>
@@ -340,7 +342,7 @@ export function HeroCarousel() {
       ))}
 
       <div className="absolute inset-0 z-10 flex items-center">
-        <div className="mx-auto w-full max-w-6xl px-4">
+        <div className="mx-auto w-full max-w-6xl px-6 lg:px-8">
           {heroSlides.map((slide, index) => (
             <motion.div
               key={`content-${slide.id}`}
@@ -356,59 +358,68 @@ export function HeroCarousel() {
                 ease: [0.25, 0.46, 0.45, 0.94],
                 delay: index === currentIndex ? 0.2 : 0,
               }}
-              className="absolute max-w-2xl text-white"
+              className="absolute max-w-2xl text-left text-white"
             >
-              <motion.span
-                animate={{
-                  opacity: index === currentIndex ? 1 : 0,
-                  x: index === currentIndex ? 0 : -30,
-                }}
-                transition={{ duration: 0.8, delay: index === currentIndex ? 0.4 : 0 }}
-                className="badge bg-white/20 text-white backdrop-blur-sm"
-              >
-                Discours du Ministre
-              </motion.span>
-              <motion.h1
-                animate={{
-                  opacity: index === currentIndex ? 1 : 0,
-                  y: index === currentIndex ? 0 : 20,
-                }}
-                transition={{ duration: 0.8, delay: index === currentIndex ? 0.5 : 0 }}
-                className="mt-6 text-5xl font-bold leading-tight lg:text-7xl"
-              >
-                "{slide.title}"
-              </motion.h1>
-              <motion.p
-                animate={{
-                  opacity: index === currentIndex ? 1 : 0,
-                  y: index === currentIndex ? 0 : 15,
-                }}
-                transition={{ duration: 0.8, delay: index === currentIndex ? 0.6 : 0 }}
-                className="mt-6 text-xl text-blue-50 lg:text-2xl"
-              >
-                {slide.subtitle}
-              </motion.p>
-              <motion.div
-                animate={{
-                  opacity: index === currentIndex ? 1 : 0,
-                  y: index === currentIndex ? 0 : 15,
-                }}
-                transition={{ duration: 0.8, delay: index === currentIndex ? 0.7 : 0 }}
-                className="mt-10 flex flex-wrap gap-4"
-              >
-                <a
-                  href={slide.ctaLink}
-                  className="btn btn-primary bg-white text-gray-900 shadow-xl shadow-black/20 hover:bg-yellow-100 hover:shadow-2xl"
+              <div className="space-y-5">
+                <motion.span
+                  animate={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    x: index === currentIndex ? 0 : -30,
+                  }}
+                  transition={{ duration: 0.8, delay: index === currentIndex ? 0.4 : 0 }}
+                  className="inline-block rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md"
                 >
-                  {slide.cta}
-                </a>
-                <a
-                  href="/actualites"
-                  className="btn btn-outline border-white/40 text-white backdrop-blur-sm hover:border-white hover:bg-white/10"
+                  Discours du Ministre
+                </motion.span>
+                
+                <motion.h1
+                  animate={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    y: index === currentIndex ? 0 : 20,
+                  }}
+                  transition={{ duration: 0.8, delay: index === currentIndex ? 0.5 : 0 }}
+                  className="text-3xl font-bold leading-tight lg:text-4xl xl:text-5xl"
+                  style={{ textAlign: 'left' }}
                 >
-                  Actualités à la une
-                </a>
-              </motion.div>
+                  "{slide.title}"
+                </motion.h1>
+                
+                <motion.p
+                  animate={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    y: index === currentIndex ? 0 : 15,
+                  }}
+                  transition={{ duration: 0.8, delay: index === currentIndex ? 0.6 : 0 }}
+                  className="max-w-xl text-base leading-relaxed text-white/90 lg:text-lg xl:text-xl"
+                  style={{ textAlign: 'justify', textJustify: 'inter-word' }}
+                >
+                  {slide.subtitle}
+                </motion.p>
+                
+                <motion.div
+                  animate={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    y: index === currentIndex ? 0 : 15,
+                  }}
+                  transition={{ duration: 0.8, delay: index === currentIndex ? 0.7 : 0 }}
+                  className="flex flex-wrap items-center gap-4 pt-4"
+                >
+                  <a
+                    href={slide.ctaLink}
+                    className="rounded-full bg-white/10 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105"
+                    style={{ color: '#ffffff' }}
+                  >
+                    {slide.cta}
+                  </a>
+                  <a
+                    href="/actualites"
+                    className="rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-white/20 hover:border-white/50 hover:scale-105"
+                    style={{ color: '#ffffff' }}
+                  >
+                    Actualités à la une
+                  </a>
+                </motion.div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -454,6 +465,9 @@ export function HeroCarousel() {
           />
         ))}
       </div>
+
+      {/* Barre tricolore (Ligne d'État) en bas du carousel */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 h-1 state-line-horizontal" aria-hidden />
     </section>
   );
 }
